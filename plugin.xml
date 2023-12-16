@@ -1,0 +1,19 @@
+<library path="src">
+  <class name="RqtSimpleLauncher"
+         type="rqt_simple_launcher.rqt_simple_launcher.RqtSimpleLauncher"
+         base_class_type="rqt_gui_py::Plugin">
+    <description>
+      rqt helper to run launch files via GUI.
+    </description>
+    <qtgui>
+      <group>
+        <label>Robot</label>
+        <icon type="theme">folder</icon>
+        <statustip>status tip text.</statustip>
+      </group>
+      <label>rqt_simple_launcher</label>
+      <icon type="theme">applications-other</icon>
+      <statustip>status tip text 2.</statustip>
+    </qtgui>
+  </class>
+</library>

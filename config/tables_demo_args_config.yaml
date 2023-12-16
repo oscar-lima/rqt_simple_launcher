@@ -1,0 +1,25 @@
+brief: 'Bringup sim'
+# 'roslaunch tables_demo_bringup demo_sim.launch'
+launch:
+  ros_pkg: 'tables_demo_bringup'
+  folder: 'launch'
+  launch_file: 'demo_sim.launch'
+# the current implementation allows for one boolean argument
+bool_arg: # if parameter is missing widget will be hidden
+  initial_state: true # true means checked, false means unchecked
+  text: 'gazebo gui'
+  arg: 'gui'
+# the current implementation allows for up to four string arguments
+args:
+  - text: 'world'
+    arg: 'world'
+    options: ['pbr_moelk', 'pbr_cic']
+    selected_option: 'pbr_moelk'
+  - text: 'world config'
+    arg: 'world_config'
+    options: ['moelk_tables', 'cic_tables', 'truck_assembly']
+    selected_option: 'moelk_tables'
+  - text: 'physics profile'
+    arg: 'physics_profile'
+    options: ['slow', 'fast']
+    selected_option: 'fast'
