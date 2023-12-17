@@ -195,8 +195,11 @@ class RqtSimpleLauncher(Plugin):
         '''
         Callback function to execute a process via topic
         '''
-        rospy.logwarn('received trigger to exec process via topic')
-        self.cmd_exec_clicked()
+        rospy.loginfo('received trigger to exec process via topic')
+        if not self.exec_on:
+            self.cmd_exec_clicked()
+        else:
+            rospy.logerr('process is already running, will not execute again')
 
     def configure_exec_button_down(self):
         button_common_text = f'Down\nclick to\n'
