@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- example launch file on how to run 2 instances of rqt helper to run launch files via GUI. -->
+
+  <arg name="base_path" default="$(env ROS_WORKSPACE)/rqt_simple_launcher_config"/>
+  <arg name="perspective_name" default="tiago_grasplan_debug"/>
+  <arg name="perspective_file_path" default="$(arg base_path)/$(arg perspective_name).perspective"/>
+
+  <!-- load 2 gui configuration, i.e. combo boxes and labels content and state -->
+  <arg name="args_config_1" default="tiago_tables_demo"/>
+  <arg name="args_config_2" default="grasplan_simple_test"/>
+  <arg name="load_arg_config_path_1"
+       default="$(arg base_path)/$(arg args_config_1)/args_config.yaml"/>
+  <arg name="load_arg_config_path_2"
+       default="$(arg base_path)/$(arg args_config_2)/args_config.yaml"/>
+  <!-- a list of services to wait for to consider that the launch file finished launching -->
+  <arg name="required_services_config_path_1"
+       default="$(arg base_path)/$(arg args_config_1)/required_services.yaml"/>
+  <arg name="required_services_config_path_2"
+       default="$(arg base_path)/$(arg args_config_1)/required_services.yaml"/>
+
+  <!-- timeout in seconds to wait for the required services to be available -->
+  <arg name="execution_timeout_1" default="60"/>
+  <arg name="execution_timeout_2" default="60"/>
+
+  <!-- false: really launches the launch file, true: only prints the command that will be launched for debug purposes -->
+  <arg name="only_print_cmd_1" default="false"/>
+  <arg name="only_print_cmd_2" default="false"/>
+
+  <!-- run rqt gui with 2 instances of rqt_simple_launcher -->
+  <!-- args_config_1 and args_config_2 act as a middle namespace for the first and second instances of rqt_simple_launcher -->
+  <arg name="rqt_gui_node_name" value="rqt_multiple_launcher_gui_node"/>
+  <node pkg="rqt_gui" type="rqt_gui" name="$(arg rqt_gui_node_name)" output="screen"
+        args="--perspective-file $(arg perspective_file_path)">
+    <param name="args_config_1" value="$(arg args_config_1)"/>
+    <param name="args_config_2" value="$(arg args_config_2)"/>
+
+    <param name="$(arg args_config_1)/only_print_cmd" value="$(arg only_print_cmd_1)"/>
+    <param name="$(arg args_config_1)/execution_timeout" value="$(arg execution_timeout_1)"/>
+    <rosparam command="load" file="$(arg load_arg_config_path_1)" ns="$(arg args_config_1)"/>
+    <rosparam command="load" file="$(arg required_services_config_path_1)" ns="$(arg args_config_1)"/>
+    <remap from="~$(arg args_config_1)/exec_sibling_process" to="/$(arg rqt_gui_node_name)/exec_sibling_process_2"/> <!-- pub -->
+    <remap from="~$(arg args_config_1)/execute_process" to="/$(arg rqt_gui_node_name)/unused_2"/> <!-- sub -->
+
+    <param name="$(arg args_config_2)/only_print_cmd" value="$(arg only_print_cmd_2)"/>
+    <param name="$(arg args_config_2)/execution_timeout" value="$(arg execution_timeout_2)"/>
+    <rosparam command="load" file="$(arg load_arg_config_path_2)" ns="$(arg args_config_2)"/>
+    <rosparam command="load" file="$(arg required_services_config_path_2)" ns="$(arg args_config_2)"/>
+    <remap from="~$(arg args_config_2)/exec_sibling_process" to="/$(arg rqt_gui_node_name)/unused_3"/> <!-- pub -->
+    <!-- connect output of gui 1 to input of gui 2 so when gui 1 launches a launch file, gui 2 will be notified and run process -->
+    <remap from="~$(arg args_config_2)/execute_process" to="/$(arg rqt_gui_node_name)/exec_sibling_process_2"/> <!-- sub -->
+  </node>
+
+</launch>

@@ -4,19 +4,23 @@
   <!-- rqt helper to run launch files via GUI. -->
 
   <!-- load gui configuration, e.g. combo boxes and labels content and state -->
-  <arg name="args_config" default="tables_demo"/>
+  <arg name="args_config" default="tiago_tables_demo"/>
   <arg name="load_arg_config_path"
-       default="$(find rqt_simple_launcher)/config/$(arg args_config)_args_config.yaml"/>
+       default="$(env ROS_WORKSPACE)/rqt_simple_launcher_config/$(arg args_config)/args_config.yaml"/>
   <!-- a list of services to wait for to consider that the launch file finished launching -->
   <arg name="required_services_config_path"
-       default="$(find rqt_simple_launcher)/config/$(arg args_config)_required_services.yaml"/>
+       default="$(env ROS_WORKSPACE)/rqt_simple_launcher_config/$(arg args_config)/required_services.yaml"/>
+
+  <!-- timeout in seconds to wait for the required services to be available -->
+  <arg name="execution_timeout" default="60"/>
 
   <!-- false: really launches the launch file, true: only prints the command that will be launched for debug purposes -->
   <arg name="only_print_cmd" default="false"/>
 
   <node pkg="rqt_simple_launcher" type="rqt_simple_launcher" name="rqt_simple_launcher_gui_node"
-        output="screen">
+        output="screen" ns="$(arg args_config)">
     <param name="only_print_cmd" value="$(arg only_print_cmd)"/>
+    <param name="execution_timeout" value="$(arg execution_timeout)"/>
     <rosparam command="load" file="$(arg load_arg_config_path)"/>
     <rosparam command="load" file="$(arg required_services_config_path)"/>
   </node>
