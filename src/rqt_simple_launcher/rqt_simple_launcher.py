@@ -337,6 +337,7 @@ class RqtSimpleLauncher(Plugin):
             QApplication.processEvents() # prevent the system thinking that the application is not responding
             time.sleep(1)
         self._widget.groupArguments.setEnabled(True)
+        self.exec_on = False
 
     def is_node_finished(self, process):
         # Check if the process has finished
