@@ -5,7 +5,7 @@
 
   <arg name="base_path" default="$(env ROS_WORKSPACE)/rqt_simple_launcher_config"/>
   <arg name="perspective_name" default="tiago_grasplan_debug"/>
-  <arg name="perspective_file_path" default="$(arg base_path)/$(arg perspective_name).perspective"/>
+  <arg name="perspective_file_path" default="$(arg base_path)/rqt_gui_perspectives/$(arg perspective_name).perspective"/>
 
   <!-- load 2 gui configuration, i.e. combo boxes and labels content and state -->
   <arg name="args_config_1" default="tiago_tables_demo"/>
