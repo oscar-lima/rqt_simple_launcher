@@ -318,6 +318,36 @@ class RqtSimpleLauncher(Plugin):
         self.wait_for_services(self.required_services, timeout=self.execution_timeout)
         self.trigger_pub.publish(String('done'))
 
+    def wait_for_node_to_finish(self, process, timeout=30):
+        '''
+        we could use process.wait() but it is blocking and we don't want rqt msgs saying process is not responding
+        this method esentially does the same as process.wait() but in a non-blocking way and with a timeout
+        unlike the wait for services approach used for launch files, here we don't kill the process if timeout occurs
+        but after the timeout we enable the arguments group and allow the user to bring down the node manually by pressing the toggle button
+        '''
+        if self.only_print_cmd:
+            rospy.loginfo('Not waiting for node to finish as only_print_cmd is True')
+            return True
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if self.is_node_finished(process):
+                rospy.loginfo('Node is finished with execution!')
+                self.configure_exec_button_down()
+                return
+            QApplication.processEvents() # prevent the system thinking that the application is not responding
+            time.sleep(1)
+        self._widget.groupArguments.setEnabled(True)
+
+    def is_node_finished(self, process):
+        # Check if the process has finished
+        if process.poll() is None:
+            # Process is still running
+            return False
+        else:
+            # Process finished
+            # exit_code = process.poll()
+            return True
+
     def run_node(self):
         self.configure_exec_button('red', 'Running\nplease wait...')
         self._widget.groupArguments.setEnabled(False)
@@ -332,7 +362,7 @@ class RqtSimpleLauncher(Plugin):
         if not self.only_print_cmd:
             # shell=False is important as it is safer
             self.exec_process = subprocess.Popen(cmd, shell=False, preexec_fn=os.setsid)
-        self.wait_for_services(self.required_services, timeout=self.execution_timeout)
+        self.wait_for_node_to_finish(self.exec_process, timeout=self.execution_timeout)
         self._widget.groupArguments.setEnabled(False)
 
     def kill_exec_process(self):

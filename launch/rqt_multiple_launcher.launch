@@ -22,7 +22,7 @@
 
   <!-- timeout in seconds to wait for the required services to be available -->
   <arg name="execution_timeout_1" default="60"/>
-  <arg name="execution_timeout_2" default="60"/>
+  <arg name="execution_timeout_2" default="30"/>
 
   <!-- false: really launches the launch file, true: only prints the command that will be launched for debug purposes -->
   <arg name="only_print_cmd_1" default="false"/>
