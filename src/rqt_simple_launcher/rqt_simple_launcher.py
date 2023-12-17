@@ -373,7 +373,10 @@ class RqtSimpleLauncher(Plugin):
         self._widget.groupArguments.setEnabled(False)
         if self.exec_process:
             if not self.only_print_cmd:
-                os.killpg(os.getpgid(self.exec_process.pid), signal.SIGINT)
+                try:
+                    os.killpg(os.getpgid(self.exec_process.pid), signal.SIGINT)
+                except ProcessLookupError:
+                    rospy.logwarn('Process already killed')
                 # wait for the process to complete
                 self.exec_process.wait()
             self.exec_process = None
